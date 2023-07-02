@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data/traefik.yaml:/traefik.yaml:ro
+      - ./data/acme.json:/acme.json
+    labels:
+      # Enable traefik
+      - "traefik.enable=true"
+
+      # Middleware to redirect HTTP to HTTPS
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+
+      # Middleware to strip the 'www' prefix
+      - "traefik.http.middlewares.strip-www.redirectregex.regex=^https?://www\\.(.*)"
+      - "traefik.http.middlewares.strip-www.redirectregex.replacement=https://$${1}"
+      - "traefik.http.middlewares.strip-www.redirectregex.permanent=true"
+
+      # Middleware to remove X-Powered-by Header
+      - "traefik.http.middlewares.remove-xpowered.headers.customresponseheaders.X-Powered-By="
+
+      # Middleware for Basic Authentication
+      - "traefik.http.middlewares.traefik-dashboard-auth.basicauth.users=username:hashed-password"
+
+      # Router for all HTTP traffic, redirecting to HTTPS
+      - "traefik.http.routers.http-to-https.rule=HostRegexp(`{host:.+}`)"
+      - "traefik.http.routers.http-to-https.entrypoints=http"
+      - "traefik.http.routers.http-to-https.middlewares=redirect-to-https"
+
+      # Routers for 'www' subdomains (both HTTP and HTTPS), stripping 'www' and redirecting to HTTPS
+      - "traefik.http.routers.strip-and-redirect.rule=HostRegexp(`www.{host:.+}`)"
+      - "traefik.http.routers.strip-and-redirect.entrypoints=http"
+      - "traefik.http.routers.strip-and-redirect.middlewares=redirect-to-https,strip-www"
+      - "traefik.http.routers.strip-and-redirect-https.rule=HostRegexp(`www.{host:.+}`)"
+      - "traefik.http.routers.strip-and-redirect-https.entrypoints=https"
+      - "traefik.http.routers.strip-and-redirect-https.middlewares=redirect-to-https,strip-www"
+      - "traefik.http.routers.strip-and-redirect-https.tls=true"
+
+      # Routers for traefik dashboard
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.domain`)"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=https"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
+      - "traefik.http.routers.traefik-dashboard.middlewares=remove-xpowered"
+      - "traefik.http.routers.traefik-dashboard.middlewares=traefik-dashboard-auth"
+    networks:
+      - traefik_proxy
+networks:
+  traefik_proxy:
+    name: traefik_proxy
