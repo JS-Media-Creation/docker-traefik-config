@@ -1,5 +1,5 @@
 # Configuration for traefik as a docker container
-## Features..
+## Features
 - Certresolver for ssl certificates
 - Redirect www to non-www
 - Redirect http to https
