@@ -47,7 +47,7 @@ services:
       - "traefik.http.routers.strip-and-redirect-https.tls=true"
 
       # Routers for traefik dashboard
-      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.domain`)"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`your.traefik.domain`)"
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
       - "traefik.http.routers.traefik-dashboard.entrypoints=https"
       - "traefik.http.routers.traefik-dashboard.tls=true"
