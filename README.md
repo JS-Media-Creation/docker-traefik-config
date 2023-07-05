@@ -13,5 +13,5 @@
 - Inside of the "data" folder create an empty "acme.json" file with chown 600
 - Copy the traefik.yaml from this repo into the data folder and make your adjustments
 - Copy the docker-compose.yaml from this repo into the "traefik" folder and make your adjustments
-- Run "docker compose up -d"
+- Run ```docker compose up -d```
 - Drink a coffee and have fun ☕
