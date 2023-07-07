@@ -40,10 +40,10 @@ services:
       # Routers for 'www' subdomains (both HTTP and HTTPS), stripping 'www' and redirecting to HTTPS
       - "traefik.http.routers.strip-and-redirect.rule=HostRegexp(`www.{host:.+}`)"
       - "traefik.http.routers.strip-and-redirect.entrypoints=http"
-      - "traefik.http.routers.strip-and-redirect.middlewares=redirect-to-https,strip-www"
+      - "traefik.http.routers.strip-and-redirect.middlewares=strip-www,redirect-to-https"
       - "traefik.http.routers.strip-and-redirect-https.rule=HostRegexp(`www.{host:.+}`)"
       - "traefik.http.routers.strip-and-redirect-https.entrypoints=https"
-      - "traefik.http.routers.strip-and-redirect-https.middlewares=redirect-to-https,strip-www"
+      - "traefik.http.routers.strip-and-redirect-https.middlewares=strip-www,redirect-to-https"
       - "traefik.http.routers.strip-and-redirect-https.tls=true"
 
       # Routers for traefik dashboard
