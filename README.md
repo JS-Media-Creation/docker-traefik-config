@@ -15,3 +15,5 @@
 - Copy the docker-compose.yaml from this repo into the "traefik" folder and make your adjustments
 - Run ```docker compose up -d```
 - Drink a coffee and have fun ☕
+
+**Special Thanks to @mxmxchere for his support!🔥**
