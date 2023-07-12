@@ -16,4 +16,4 @@
 - Run ```docker compose up -d```
 - Drink a coffee and have fun ☕
 
-**Special Thanks to @mxmxchere for his support!🔥**
+**Special Thanks to [@mxmxchere](https://github.com/mxmxchere) for his support!🔥**
